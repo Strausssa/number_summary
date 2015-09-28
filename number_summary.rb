@@ -1,4 +1,4 @@
-# @author Tim Padjen <tpadjen@gmail.com>
+# @author Sam Strauss <strausssa@s.dcsdk12.org>
 class NumberSummary
 	
 	class << self
@@ -59,12 +59,12 @@ class NumberSummary
     	median split[1]
   end
 
-  def mode(a)
+	def mode(array)
 		var = 0
 		mode = 0
 		prevVar = 0
-		a.each do |i|
-			a.each do |n|
+		array.each do |i|
+			array.each do |n|
 				if i == n
 					var += 1
 					mode = n if var > prevVar
@@ -76,6 +76,41 @@ class NumberSummary
 		puts "mode: #{mode}"
 	end
 
+	def mode2(array)
+		most = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
+		array.max_by { |v| most[v] }
+	end
+
+	def q1(array)
+		if array.length % 2 == 0 
+			array_final = array[0..(array.length/2 - 1)]
+		else
+			array_final = array[0..(array.length/2)]
+		end	
+			
+		median(array_final)
+	end
+
+	def q3(array)
+		if array.length % 2 == 0
+			array_final = array[(array.length/2)...array.length]
+		else
+			array_final = array[(array.length/2 + 1)...array.length]
+		end
+			
+		median(array_final)
+	end
+
+	def sigma(array)
+		variation = mean(array)
+		puts variation
+		array_dif = []
+		(0...array.length).each do |n|
+			array_dif.push((array[n] - variation)**2)
+		end	
+		mean(array_dif)
+	end
+# ------------------------------ Standard Deviation (try them) -------------------------------#
 	def standard_deviation
     return Math.sqrt(self.sample_variance)
   end
@@ -95,6 +130,10 @@ end
 end
 end
 
+
+
+
+#----------------------------------------------------------------------------------------------#
 #Order should be:
 #min: -9.45
 #max: 4.99
