@@ -3,133 +3,113 @@ class NumberSummary
 	
 	class << self
 
-		def min(a)
-			puts "min: #{a.min}"
+		def return_array(fil)
+			file = File.open(fil, "r")
+			array = file.read
+			array = array.split ","
+			# arra = array.to_i
+			(0...array.length).each do |n|
+				array[n] = array[n].to_f
+			end
+			array.sort
 		end
 
-		def max(a)
-			puts "max: #{a.max}"	
+		def max(array)
+			array.max
 		end
 
-		def average(a)
-			total = 0
+		def min(array)
+			array.min
+		end
+
+
+		def mean(array)
+			sum = 0.0
+			(0...array.length).each do |n|
+				sum += array[n]
+			end
+			(sum / array.length).round(1)
+		end
+
+		def median(array)
 			average = 0
-			a.each do |element|
-			total += element.to_f
-		end
-			average = total / a.length
-			puts "mean: #{average}"
-		end
-
-	def median(a)
-		sorted = a.sort
-		length = a.length
-		median = 0
-
-		if length%2 == 0
-			first = sorted[length/2 - 1]
-			second = sorted[length/2] 
-
-			median = (first + second) / 2
-		else
-			median = sorted[(length-1)/2]
-		end
-			puts "median: #{median}"
+			if array.length % 2 == 0
+				average = (array[(array.length / 2 - 1)] + array[array.length / 2]) / 2
+			else 
+				return array[array.length / 2]
+			end
+			average.round(1)
 		end
 
-	def q1(array)
-   arr = array.sort
-   length = arr.size
-   quart = (length/4.0).floor
-   fraction = 1-((length/4.0)-quart)
-   new_arr = arr[quart..-(quart + 1)]
-   (fraction*(new_arr[0]+new_arr[-1]) + new_arr[1..-2].inject(:+))/(length/2.0)
-	end
-
-
-	def quartile(arr,n=3)
-  	arr.sort!
-  	split = median_split arr
-  	case n
-  	when 1
-    	median split[0]
-  	when 2
-    	median arr
-  	when 3
-    	median split[1]
-  end
-
-	def mode(array)
-		var = 0
-		mode = 0
-		prevVar = 0
-		array.each do |i|
-			array.each do |n|
-				if i == n
-					var += 1
-					mode = n if var > prevVar
-					prevVar = var
+		def mode(array)
+			max = 0
+			array_uni = array.uniq
+			array_count = []
+			array_final = []
+			(0...array_uni.length).each do |n|
+				array_count.push(0)
+			end
+			(0...array.length).each do |n|
+				(0...array_uni.length).each do |x|
+					if array_uni[x] == array[n]
+						array_count[x] += 1
+					end
 				end
 			end
-			var = 0
+			max = array_count.max
+			(0...array_count.length).each do |n|
+				if array_count[n] == max
+					array_final.push(array_uni[n])
+				end
+			end
+			array_final
 		end
-		puts "mode: #{mode}"
-	end
 
-	def mode2(array)
-		most = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
-		array.max_by { |v| most[v] }
-	end
-
-	def q1(array)
-		if array.length % 2 == 0 
-			array_final = array[0..(array.length/2 - 1)]
-		else
-			array_final = array[0..(array.length/2)]
-		end	
+		def q1(array)
+			if array.length % 2 == 0 
+				array_final = array[0..(array.length/2 - 1)]
+			else
+				array_final = array[0..(array.length/2)]
+			end	
 			
-		median(array_final)
-	end
-
-	def q3(array)
-		if array.length % 2 == 0
-			array_final = array[(array.length/2)...array.length]
-		else
-			array_final = array[(array.length/2 + 1)...array.length]
+			median(array_final).round(1)
 		end
+
+		def q3(array)
+			if array.length % 2 == 0
+				array_final = array[(array.length/2)...array.length]
+			else
+				array_final = array[(array.length/2 + 1)...array.length]
+			end
 			
-		median(array_final)
-	end
+			median(array_final).round(1)
+		end
 
-	def sigma(array)
-		variation = mean(array)
-		puts variation
-		array_dif = []
-		(0...array.length).each do |n|
-			array_dif.push((array[n] - variation)**2)
-		end	
-		mean(array_dif)
-	end
-# ------------------------------ Standard Deviation (try them) -------------------------------#
-	def standard_deviation
-    return Math.sqrt(self.sample_variance)
-  end
+		def sigma(array)
+			variation = mean(array).round(1)
+			array_dif = []
+			(0...array.length).each do |n|
+				array_dif.push(((array[n] - variation)**2).round(1))
+			end	
+			Math.sqrt(mean(array_dif))
+		end
 
-  #Testing it:
-  #a = [ 20, 23, 23, 24, 25, 22, 12, 21, 29 ]
-	#a.standard_deviation  
-	# => 4.594682917363407
+		def summarize(filename)
+			array = return_array(filename)
+			puts "Number Summary: "
+			puts "min: #{NumberSummary.min(NumberSummary.return_array("data.csv"))}"
+			puts "max: #{NumberSummary.max(NumberSummary.return_array("data.csv"))}"
+			puts "mean: #{NumberSummary.mean(NumberSummary.return_array("data.csv"))}"
+			puts "median: #{NumberSummary.median(NumberSummary.return_array("data.csv"))}"
+			puts "q1: #{NumberSummary.q1(NumberSummary.return_array("data.csv"))}"
+			puts "q3: #{NumberSummary.q3(NumberSummary.return_array("data.csv"))}"
+			puts "mode: #{NumberSummary.mode(NumberSummary.return_array("data.csv"))}"
+			puts "sigma: #{NumberSummary.sigma(NumberSummary.return_array("data.csv"))}"
+		end
 
-	def mean_and_standard_deviation(array)
-  	m = mean(array)
-  	variance = array.inject(0) { |variance, x| variance += (x - m) ** 2 }
-  	return m, Math.sqrt(variance/(array.size-1))
 	end
 
 end
-end
-end
-
 
 
 
