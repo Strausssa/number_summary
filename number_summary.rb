@@ -32,13 +32,9 @@ class NumberSummary
 		end
 
 		def median(array)
-			average = 0
-			if array.length % 2 == 0
-				average = (array[(array.length / 2 - 1)] + array[array.length / 2]) / 2
-			else 
-				return array[array.length / 2]
-			end
-			average.round(1)
+  		sorted = array.sort
+  		len = sorted.length
+  		return (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
 		end
 
 		def mode(array)
@@ -62,7 +58,7 @@ class NumberSummary
 					array_final.push(array_uni[n])
 				end
 			end
-			array_final
+			array_final.sort
 		end
 
 		def q1(array)
@@ -96,15 +92,17 @@ class NumberSummary
 
 		def summarize(filename)
 			array = return_array(filename)
-			puts "Number Summary: "
-			puts "min: #{NumberSummary.min(NumberSummary.return_array("data.csv"))}"
-			puts "max: #{NumberSummary.max(NumberSummary.return_array("data.csv"))}"
-			puts "mean: #{NumberSummary.mean(NumberSummary.return_array("data.csv"))}"
-			puts "median: #{NumberSummary.median(NumberSummary.return_array("data.csv"))}"
-			puts "q1: #{NumberSummary.q1(NumberSummary.return_array("data.csv"))}"
-			puts "q3: #{NumberSummary.q3(NumberSummary.return_array("data.csv"))}"
-			puts "mode: #{NumberSummary.mode(NumberSummary.return_array("data.csv"))}"
-			puts "sigma: #{NumberSummary.sigma(NumberSummary.return_array("data.csv"))}"
+			return"""
+			Number Summary:
+			min: #{min(array)}
+			max: #{max(array)}
+			mean: #{mean(array)}
+			median: #{median(array)}
+			q1: #{q1(array)}
+			q3: #{q3(array)}
+			mode: #{mode(array)}
+			sigma: #{sigma(array)}
+			"""
 		end
 
 	end
